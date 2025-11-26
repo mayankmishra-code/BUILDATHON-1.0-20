@@ -191,6 +191,71 @@ function stopCamera() {
         cameraStream = null;
     }
 }
+// --- 5. 10-MINUTE LOCATION AND ALERT LOGIC ---
+
+function triggerAlert() {
+    statusMessage.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Alert triggered. Requesting Location & Camera Access...";
+    
+    cancelButton.classList.add('alert-mode-active');
+    cancelButton.classList.remove('hidden');
+    
+    startLiveLocationTracking();
+}
+
+function startLiveLocationTracking() {
+    if (!navigator.geolocation) {
+        statusMessage.innerHTML = "<i class='fas fa-times-circle'></i> Geolocation is not supported by this browser.";
+        return;
+    }
+    
+    const ONE_MINUTE = 60 * 1000;
+
+    // 1. Initialize Camera 
+    initializeCamera();
+    
+    // 2. Start Watch Position (Updates the 'currentMapLink' variable continuously)
+    watchId = navigator.geolocation.watchPosition((position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        
+        // Corrected Google Maps search API format (Ensuring the URL is valid)
+        currentMapLink = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+        
+        // Update status with the latest location on the user's screen
+        statusMessage.innerHTML = `
+            <span style="font-weight: bold;"><i class='fas fa-location-arrow'></i> ALERT ACTIVE: Live Tracking</span><br>
+            Latest Location: <a href="${currentMapLink}" target="_blank" style="color: var(--text-light); text-decoration: underline;">VIEW LIVE MAP</a>
+            <p style="font-size: 0.8em; margin: 0;">L/L: ${lat.toFixed(5)}, ${lon.toFixed(5)}</p>
+        `;
+
+        if (!initialAlertSent) {
+             // Send immediate email (0 min)
+             captureFrameAndSend("0 min (Initial)", 0); 
+             initialAlertSent = true;
+        }
+
+    }, (error) => {
+        statusMessage.innerHTML = `<i class='fas fa-exclamation-triangle'></i> Location Error: ${error.message}. Tracking interrupted.`;
+    }, {
+        enableHighAccuracy: true,
+        timeout: 10000, 
+        maximumAge: 0
+    });
+
+    // 3. Schedule 9 more updates (1 minute to 9 minutes)
+    for (let i = 1; i <= 9; i++) {
+        const delay = i * ONE_MINUTE;
+        const type = `${i} min Update`;
+        
+        const timerId = setTimeout(() => {
+            if (watchId) {
+                 // Send location update AND captured frame
+                 captureFrameAndSend(type, i); 
+            }
+        }, delay);
+        trackingTimeouts.push(timerId);
+    }
+}
 
 
 
