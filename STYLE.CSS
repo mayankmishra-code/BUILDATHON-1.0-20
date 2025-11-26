@@ -129,3 +129,43 @@ header {
     color: #a0aec0;
     margin-top: 5px;
 }
+/* STATUS BOX - HIGH-VISIBILITY */
+.status-box {
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    
+    /* Default State: Waiting (Dark/Neutral) */
+    background-color: #2d3748; 
+    color: #a0aec0;
+    border: 2px solid #4a5568;
+}
+
+.status-box i {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.status-box.listening-status {
+    background-color: var(--success-color);
+    color: var(--text-light);
+    border-color: #2f855a;
+}
+
+.status-box.alert-triggered {
+    background-color: var(--danger-color);
+    color: var(--text-light);
+    border-color: #c53030;
+    animation: shake 0.5s;
+    animation-iteration-count: 2;
+}
