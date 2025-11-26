@@ -72,4 +72,22 @@ body {
 .input-group {
     margin-bottom: 20px;
 }
-
+.login-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 0.85em;
+    color: var(--text-light);
+}
+.login-card input {
+    width: 100%;
+    padding: 14px 10px;
+    border: 1px solid #4a5568; 
+    background-color: #2d3748; 
+    color: var(--text-light);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
