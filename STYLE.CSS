@@ -34,3 +34,60 @@ body {
     transform: translateX(-100%); /* Slide in effect */
     box-sizing: border-box;
 }
+.app-page.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* --- LOGIN SCREEN STYLES --- */
+#login-screen {
+    background: var(--background-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.login-card {
+    background: var(--card-background);
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border for definition */
+}
+.app-logo { 
+    color: var(--secondary-color); 
+    margin-bottom: 5px; 
+    font-size: 1.8em; 
+    font-weight: 900;
+}
+.tagline-login { 
+    color: #a0aec0; 
+    margin-bottom: 30px; 
+    font-size: 0.9em; 
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+.login-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 0.85em;
+    color: var(--text-light);
+}
+.login-card input {
+    width: 100%;
+    padding: 14px 10px;
+    border: 1px solid #4a5568; 
+    background-color: #2d3748; 
+    color: var(--text-light);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
