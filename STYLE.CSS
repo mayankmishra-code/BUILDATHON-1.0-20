@@ -34,3 +34,16 @@ body {
     transform: translateX(-100%); /* Slide in effect */
     box-sizing: border-box;
 }
+.app-page.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* --- LOGIN SCREEN STYLES --- */
+#login-screen {
+    background: var(--background-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
