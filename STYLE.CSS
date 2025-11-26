@@ -21,3 +21,16 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
 }
+/* Page Visibility Logic */
+.app-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-100%); /* Slide in effect */
+    box-sizing: border-box;
+}
