@@ -78,5 +78,95 @@ loginButton.addEventListener('click', handleLogin);
 logoutButton.addEventListener('click', handleLogout);
 window.addEventListener('load', checkLoginStatus);
 
+// --- 3. VOICE RECOGNITION SETUP ---
+
+function initializeVoiceRecognition() {
+    if (!('webkitSpeechRecognition' in window)) {
+        statusMessage.innerHTML = "<i class='fas fa-times-circle'></i> Error: Browser doesn't support Voice Recognition.";
+        startButton.disabled = true;
+        startButton.classList.remove('pulse');
+        return;
+    }
+    
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = true; 
+    recognition.interimResults = false;
+    recognition.lang = 'en-US'; 
+
+    startButton.addEventListener('click', () => {
+        try {
+            recognition.start();
+        } catch (e) { }
+    });
+
+    recognition.onstart = function() {
+        isListening = true;
+        statusMessage.innerHTML = "<i class='fas fa-volume-up'></i> Listening: Say 'Help Me' or 'मदद करो' now...";
+        statusMessage.className = 'status-box listening-status';
+        startButton.classList.add('alert-mode');
+        startButton.classList.remove('pulse');
+        buttonText.textContent = 'LISTENING...';
+        startButton.disabled = true; 
+        cancelButton.classList.add('hidden');
+    };
+
+    recognition.onresult = function(event) {
+        const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+
+        if (transcript.includes('help me') || transcript.includes('madad karo')) {
+            recognition.stop(); 
+            statusMessage.innerHTML = "<i class='fas fa-bell'></i> KEYWORD DETECTED! Alerting in 3 seconds...";
+            statusMessage.className = 'status-box alert-triggered';
+            startButton.classList.remove('alert-mode');
+            
+            cancelButton.classList.remove('hidden');
+            cancelButton.disabled = false;
+            
+            trackingTimeouts.push(setTimeout(triggerAlert, 3000)); 
+        }
+    };
+
+    recognition.onerror = function(event) {
+        isListening = false;
+        resetUI(true); // Call resetUI with a flag to allow restart if not intentional
+        if (event.error === 'not-allowed') {
+             statusMessage.innerHTML = "<i class='fas fa-ban'></i> Microphone Permission Denied. Click 'Start Voice Alert' and grant access.";
+        } else if (event.error === 'network') {
+             statusMessage.innerHTML = "<i class='fas fa-wifi'></i> Network error. Please check your connection.";
+        }
+    };
+    
+    recognition.onend = function() {
+        isListening = false;
+        // Automatically restart listening if the app hasn't been cancelled/triggered an alert
+        if (!cancelButton.classList.contains('alert-mode-active')) {
+             setTimeout(() => {
+                 try { recognition.start(); } catch (e) { resetUI(); }
+             }, 1000); 
+        }
+    };
+    
+    try {
+        recognition.start();
+    } catch (e) { }
+}
+
+function resetUI() {
+    startButton.disabled = false;
+    startButton.classList.add('pulse');
+    startButton.classList.remove('alert-mode');
+    buttonText.textContent = 'START VOICE ALERT';
+    statusMessage.className = 'status-box default-status';
+    statusMessage.innerHTML = "<i class='fas fa-microphone-slash'></i> Press 'Start' to begin listening...";
+    cancelButton.classList.add('hidden');
+    cancelButton.classList.remove('alert-mode-active');
+}
+
+function clearAllTimeouts() {
+    trackingTimeouts.forEach(timerId => clearTimeout(timerId));
+    trackingTimeouts = [];
+}
+
+
 
 
