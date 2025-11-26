@@ -117,3 +117,15 @@ header {
     margin-bottom: 30px;
     text-align: center;
 }
+.app-title-main {
+    font-size: 2.5em;
+    font-weight: 900;
+    color: var(--danger-color); /* Highlight danger color here */
+    letter-spacing: 1.5px;
+}
+
+.app-tagline {
+    font-size: 1em;
+    color: #a0aec0;
+    margin-top: 5px;
+}
