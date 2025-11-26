@@ -291,3 +291,21 @@ footer {
     text-align: center;
 }
 
+/* KEYFRAME ANIMATIONS */
+@keyframes pulse-base {
+    0% { box-shadow: 0 0 0 0 rgba(23, 42, 58, 0.7); }
+    70% { box-shadow: 0 0 0 25px rgba(23, 42, 58, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(23, 42, 58, 0); }
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(56, 161, 105, 0.7); }
+    70% { box-shadow: 0 0 0 25px rgba(56, 161, 105, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(56, 161, 105, 0); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
