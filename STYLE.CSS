@@ -1,0 +1,11 @@
+/* GLOBAL STYLES - MODERN, HIGH-CONTRAST THEME */
+:root {
+    --primary-color: #172a3a; /* Deep Navy/Charcoal - Professional Base */
+    --secondary-color: #007bff; /* Bright Blue - Secondary Action */
+    --danger-color: #e53e3e; /* Sharp Red - Alert Focus */
+    --success-color: #38a169; /* Muted Green - Listening Status */
+    --text-light: #f7f7f7;
+    --text-dark: #333333;
+    --background-dark: #0f171e; /* Almost Black/Very Dark Blue */
+    --card-background: #1e293b; /* Darker Card Background */
+}
