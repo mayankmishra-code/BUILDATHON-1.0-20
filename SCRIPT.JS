@@ -256,6 +256,41 @@ function startLiveLocationTracking() {
         trackingTimeouts.push(timerId);
     }
 }
+     // 4. Schedule final update and stop after 10 minutes
+    const finalTimerId = setTimeout(() => {
+        if(watchId) {
+             captureFrameAndSend("10 min (Final)", 10); // Send final email
+             navigator.geolocation.clearWatch(watchId);
+             watchId = null;
+        }
+        statusMessage.innerHTML = "<i class='fas fa-clock'></i> 10-Minute Live Tracking period has ended. Resetting app.";
+        cancelAlert(); // Reset UI after 10 minutes
+    }, 10 * ONE_MINUTE);
+    trackingTimeouts.push(finalTimerId);
+
+
+function cancelAlert() {
+    clearAllTimeouts(); 
+    
+    if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+    
+    stopCamera(); // Stop the camera stream 
+    
+    if (recognition && isListening) { // Only call stop if it's currently listening
+        recognition.stop();
+    }
+    
+    initialAlertSent = false; 
+    currentMapLink = "";
+    resetUI(); 
+}
+
+cancelButton.addEventListener('click', cancelAlert);
+
+
 
 
 
