@@ -239,3 +239,32 @@ header {
     line-height: 1.8;
     color: #a0aec0;
 }
+.detail-line strong {
+    color: var(--text-light);
+    font-weight: 700;
+}
+
+/* GENERIC ACTION BUTTONS */
+.action-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    text-transform: uppercase;
+}
+.primary-button { /* Login Button */
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    width: 100%;
+    margin-top: 25px;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.secondary-button { /* Change Details */
+    background-color: #4a5568;
+    color: var(--text-light);
+    margin-top: 15px;
+    font-size: 0.9em;
+}
