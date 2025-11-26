@@ -31,4 +31,52 @@ let currentMapLink = ""; // Stores the latest location link
 let cameraStream = null; // To hold the media stream object
 let isListening = false; // New flag to track listening state
 
+// --- 2. LOGIN AND SETUP FUNCTIONS ---
+function checkLoginStatus() {
+    const savedUser = localStorage.getItem('userEmail');
+    const savedEmergency = localStorage.getItem('emergencyEmail');
+
+    if (savedUser && savedEmergency) {
+        savedUserEmailDisplay.textContent = savedUser;
+        savedEmergencyEmailDisplay.textContent = savedEmergency;
+        loginScreen.classList.remove('active');
+        mainAppScreen.classList.add('active');
+        setTimeout(initializeVoiceRecognition, 500); 
+    } else {
+        mainAppScreen.classList.remove('active');
+        loginScreen.classList.add('active');
+    }
+}
+
+function handleLogin() {
+    const userEmail = userEmailInput.value.trim();
+    const emergencyEmail = emergencyEmailInput.value.trim();
+    if (userEmail && emergencyEmail && userEmail.includes('@') && emergencyEmail.includes('@')) {
+        localStorage.setItem('userEmail', userEmail);
+        localStorage.setItem('emergencyEmail', emergencyEmail);
+        checkLoginStatus(); 
+    } else {
+        alert("Please enter both valid email addresses.");
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('emergencyEmail');
+    if (recognition) { recognition.stop(); }
+    if (watchId) { navigator.geolocation.clearWatch(watchId); }
+    stopCamera(); 
+    clearAllTimeouts();
+    
+    userEmailInput.value = '';
+    emergencyEmailInput.value = '';
+    initialAlertSent = false;
+    checkLoginStatus(); 
+}
+
+loginButton.addEventListener('click', handleLogin);
+logoutButton.addEventListener('click', handleLogout);
+window.addEventListener('load', checkLoginStatus);
+
+
 
