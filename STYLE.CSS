@@ -9,3 +9,15 @@
     --background-dark: #0f171e; /* Almost Black/Very Dark Blue */
     --card-background: #1e293b; /* Darker Card Background */
 }
+body {
+    font-family: 'Montserrat', sans-serif; /* Cleaner, bolder font */
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
