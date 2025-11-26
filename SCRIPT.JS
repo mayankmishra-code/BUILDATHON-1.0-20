@@ -290,6 +290,108 @@ function cancelAlert() {
 
 cancelButton.addEventListener('click', cancelAlert);
 
+// --- 6. IMAGE UPLOAD & EMAIL SEND (IMGBB FREE SOLUTION) ---
+
+async function uploadToImgBB(base64Data, type) {
+    if (!base64Data || base64Data === 'No Photo Captured.') {
+        return "No Photo Captured.";
+    }
+
+    // ImgBB API requires the Base64 string without the 'data:image/jpeg;base64,' prefix.
+    const imgData = base64Data.split(',')[1]; 
+
+    statusMessage.innerHTML += `<br><i class='fas fa-cloud-upload-alt'></i> Uploading **${type}** image to ImgBB...`;
+    
+    const formData = new FormData();
+    formData.append('key', IMGBB_API_KEY); // The required API Key
+    formData.append('image', imgData);      // The Base64 image data (without prefix)
+    formData.append('name', `${type.replace(/ /g, '_')}_Photo`); // Sets the image filename
+
+    try {
+        const response = await fetch('https://api.imgbb.com/1/upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`ImgBB upload failed: ${response.statusText}`);
+        }
+
+        const jsonResponse = await response.json();
+        
+        if (jsonResponse.success && jsonResponse.data.url) {
+            statusMessage.innerHTML += `<br><i class='fas fa-link'></i> Image link received.`;
+            return jsonResponse.data.url; // The short, permanent link
+        } else {
+            throw new Error(`ImgBB failed to return a valid URL. Response: ${JSON.stringify(jsonResponse)}`);
+        }
+    } catch (error) {
+        console.error("ImgBB Upload Error:", error);
+        statusMessage.innerHTML += `<br><i class='fas fa-exclamation-triangle'></i> ImgBB upload failed! Sending location only.`;
+        return "UPLOAD FAILED. Check console for error.";
+    }
+}
+
+async function captureFrameAndSend(type, minute) {
+    if (!currentMapLink) {
+        sendEmail({ 
+            location_link: "Location not available.", image_link: "No location available." 
+        }, type, "Location not available.");
+        return;
+    }
+    
+    const video = document.getElementById('camera-feed');
+    const canvas = document.getElementById('photo-canvas');
+    const context = canvas.getContext('2d');
+    
+    let base64Data = 'No Photo Captured.';
+    
+    if (video.srcObject && video.readyState === 4) {
+        canvas.width = 320; 
+        canvas.height = 240;
+        context.drawImage(video, 0, 0, 320, 240);
+        base64Data = canvas.toDataURL('image/jpeg', 0.6); 
+    }
+    
+    // 1. Upload the captured image and wait for the short URL
+    const shortImageLink = await uploadToImgBB(base64Data, type);
+
+    // 2. Send the email with the new parameter (image_link)
+    const templateParams = {
+        to_email: localStorage.getItem('emergencyEmail'), 
+        user_email: localStorage.getItem('userEmail'), 
+        location_link: currentMapLink,
+        alert_type: type,
+        minutes_passed: minute,
+        image_link: shortImageLink, // The short, working link
+    };
+
+    sendEmail(templateParams, type, currentMapLink);
+}
+
+
+function sendEmail(templateParams, type, locationLink) {
+    const recipientEmail = templateParams.to_email;
+
+    statusMessage.innerHTML = `<i class='fas fa-envelope-open-text'></i> Sending **${type}** update (with short image link) to ${recipientEmail}...`;
+
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+        .then((response) => {
+            statusMessage.innerHTML = `
+                <span style="font-weight: bold;"><i class='fas fa-check-circle'></i> SUCCESS! ${type} Alert Sent.</span><br>
+                <a href="${locationLink}" target="_blank" style="color: var(--text-light); text-decoration: underline;">TRACK LOCATION NOW</a>
+            `;
+            statusMessage.className = 'status-box alert-triggered';
+        }, (error) => {
+            statusMessage.innerHTML = `
+                <span style="font-weight: bold; color: yellow;"><i class='fas fa-exclamation-circle'></i> FAILED TO SEND ${type} EMAIL!</span><br>
+                <p style="margin-top: 5px;">Error: ${error.text || error}. Live tracking continues.</p>
+                <a href="${locationLink}" target="_blank" style="color: var(--text-light); text-decoration: underline;">VIEW LOCATION LINK (Fallback)</a>
+            `;
+            statusMessage.className = 'status-box alert-triggered';
+        });
+}
+
 
 
 
