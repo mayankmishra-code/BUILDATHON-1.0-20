@@ -91,3 +91,41 @@ body {
     font-size: 1em;
     transition: border-color 0.3s;
 }
+.login-card input:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.note {
+    font-size: 0.8em;
+    margin-top: 20px;
+    color: #718096;
+}
+
+
+/* --- MAIN APP SCREEN STYLES --- */
+#main-app-screen {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Space out header, content, and footer */
+}
+
+header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+.app-title-main {
+    font-size: 2.5em;
+    font-weight: 900;
+    color: var(--danger-color); /* Highlight danger color here */
+    letter-spacing: 1.5px;
+}
+
+.app-tagline {
+    font-size: 1em;
+    color: #a0aec0;
+    margin-top: 5px;
+}
