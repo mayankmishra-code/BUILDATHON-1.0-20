@@ -166,6 +166,31 @@ function clearAllTimeouts() {
     trackingTimeouts.forEach(timerId => clearTimeout(timerId));
     trackingTimeouts = [];
 }
+// --- 4. CAMERA & MEDIA LOGIC ---
+
+function initializeCamera() {
+    const video = document.getElementById('camera-feed');
+    
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+        .then(stream => {
+            cameraStream = stream;
+            video.srcObject = stream;
+            video.play();
+            statusMessage.innerHTML += "<br><i class='fas fa-video'></i> Camera stream started (hidden).";
+        })
+        .catch(err => {
+            console.error("Camera access failed:", err);
+            // This is important: The status message should not be overwritten by the location update, so we use string concatenation
+            // statusMessage.innerHTML += `<br><i class='fas fa-camera-slash'></i> Camera access failed: ${err.name}. Sending location only.`;
+        });
+}
+
+function stopCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+}
 
 
 
